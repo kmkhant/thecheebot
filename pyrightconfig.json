@@ -1,0 +1,9 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.12",
+  "include": ["cheebot", "scripts", "tests"],
+  "exclude": [".venv", "**/__pycache__", ".ruff_cache"],
+  "reportMissingImports": "error",
+  "typeCheckingMode": "basic"
+}

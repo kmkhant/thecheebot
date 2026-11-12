@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+# Local secrets
+.env
+
+# Private deployment tooling (server names, registry, credentials). The public
+# repo documents only the generic Docker commands in README.md.
+deploy/
+.deploy-snapshot.db
+
+*.db
+*.db-wal
+*.db-shm
+.DS_Store
