@@ -19,6 +19,8 @@ logger = logging.getLogger("cheebot")
 
 TELEGRAM_API = "https://api.telegram.org"
 
+LOG_FORMAT = "%(asctime)s %(levelname)-8s %(name)s: %(message)s"
+
 BAD_TOKEN = (
     "Telegram rejected the bot token.\n"
     "  Check TELEGRAM_BOT_TOKEN in .env; it looks like 123456:ABC-DEF…\n"
@@ -40,6 +42,29 @@ def _log_level() -> int:
 
 def _flag(name: str) -> bool:
     return (os.getenv(name) or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+class _ScrubFormatter(logging.Formatter):
+    """Strip the bot token from every log line, tracebacks included.
+
+    PTB builds its request URL as ``.../bot<token>/<method>``, so an httpx
+    error chained into a traceback can carry the token. Logs get pasted into
+    issues and bug reports, so it never gets to stay there.
+    """
+
+    def __init__(self, fmt: str, token: str) -> None:
+        super().__init__(fmt)
+        self._token = token
+
+    def format(self, record: logging.LogRecord) -> str:
+        text = super().format(record)
+        return text.replace(self._token, "<redacted>") if self._token else text
+
+
+def _install_token_scrubber(token: str) -> None:
+    """Apply the scrubber to whatever handlers ``basicConfig`` installed."""
+    for handler in logging.getLogger().handlers:
+        handler.setFormatter(_ScrubFormatter(LOG_FORMAT, token))
 
 
 def _scrub(text: str, token: str) -> str:
@@ -80,7 +105,7 @@ def preflight(token: str) -> tuple[str | None, str | None]:
 def main() -> int:
     logging.basicConfig(
         level=_log_level(),
-        format="%(asctime)s %(levelname)-8s %(name)s: %(message)s",
+        format=LOG_FORMAT,
     )
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
@@ -89,6 +114,8 @@ def main() -> int:
     except ConfigError as exc:
         print(f"Configuration error: {exc}", file=sys.stderr)
         return 1
+
+    _install_token_scrubber(config.bot_token)
 
     username, error = preflight(config.bot_token)
     if error is not None:

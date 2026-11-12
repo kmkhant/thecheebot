@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 import logging
+import sys
 import urllib.error
 from email.message import Message
 
@@ -25,6 +26,39 @@ def fake_urlopen(payload: dict | None = None, status: int = 200):
         return io.BytesIO(body)
 
     return _open
+
+
+def test_log_formatter_scrubs_the_token_from_messages_and_tracebacks() -> None:
+    """PTB's base URL carries the token, so httpx errors can chain it in."""
+    formatter = cli._ScrubFormatter(cli.LOG_FORMAT, TOKEN)
+
+    try:
+        raise RuntimeError(f"https://api.telegram.org/bot{TOKEN}/getMe failed")
+    except RuntimeError:
+        record = logging.LogRecord(
+            "cheebot",
+            logging.ERROR,
+            __file__,
+            1,
+            "could not reach %s",
+            (TOKEN,),
+            sys.exc_info(),
+        )
+
+    rendered = formatter.format(record)
+
+    assert TOKEN not in rendered
+    assert rendered.count("<redacted>") == 2  # once in the message, once in the trace
+    assert "api.telegram.org/bot<redacted>/getMe" in rendered
+
+
+def test_log_formatter_installs_on_root_handlers(monkeypatch) -> None:
+    handler = logging.StreamHandler(io.StringIO())
+    monkeypatch.setattr(logging.getLogger(), "handlers", [handler])
+
+    cli._install_token_scrubber(TOKEN)
+
+    assert isinstance(handler.formatter, cli._ScrubFormatter)
 
 
 def test_preflight_returns_the_bot_username(monkeypatch) -> None:
