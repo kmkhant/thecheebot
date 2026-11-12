@@ -230,7 +230,7 @@ Three loops, cheapest first.
 ### 1. Tests — half a second, no token, no network
 
 ```sh
-uv run pytest                                    # everything (222 tests)
+uv run pytest                                    # everything (228 tests)
 uv run pytest tests/test_flows.py -k duplicate    # one flow
 uv run pytest --looponfail                       # re-run on save
 uv run ruff check                                # lint (rules live in pyproject.toml)
@@ -342,6 +342,21 @@ Then open `t.me/<yourbot>`, hit Start, and send `/nearest`. Ctrl-C stops it.
 Deliberately out of scope for v1, in rough priority order:
 
 - A moderation view for hidden toilets (right now they're only visible in the database).
-- Localisation — all copy is in `cheebot/texts.py` and ready to be keyed.
+- More languages — the catalogs live in `cheebot/i18n.py`; a new one is a dict plus a code in
+  `SUPPORTED_LANGUAGES`.
 - Postgres/PostGIS, if a single city ever outgrows SQLite.
 - Photos and opening hours per toilet.
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the project layout,
+and recipes for adding a city, a language or a schema migration. Everything merged is MIT licensed.
+
+## License
+
+The code is MIT licensed — see [LICENSE](LICENSE). Use it, fork it, run your own copy.
+
+Map data imported from OpenStreetMap is **not** covered by that licence: it is
+© OpenStreetMap contributors and available under the
+[Open Database License](https://www.openstreetmap.org/copyright). Keep that attribution if you host a
+copy — it is what makes the data usable for free.
