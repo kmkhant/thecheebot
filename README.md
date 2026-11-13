@@ -7,17 +7,17 @@ roughly nothing to host.
 
 ## What it does
 
-|                      |                                                                                                                             |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Find the nearest** | `/nearest`, or tap 📍 Nearest. Search widens automatically if there's nothing close.                                        |
-| **View a place**     | Results are native venue cards with a one-tap Directions button.                                                            |
-| **Add a place**      | `/share` → send the location → name it (or Skip). Close duplicates are caught and turned into a "same place?" confirmation. |
-| **Search by text**   | `/find station`, or tap 🔍 Find.                                                                                            |
-| **Share anywhere**   | Inline mode: `@yourbot central station` in any chat.                                                                        |
-| **Rate a place**     | Tap 1–5 stars on any card. The average shows on the card; rating again replaces your score.                                 |
-| **Manage your own**  | `/mine` lists what you added, with Rename and Delete (delete asks first, then removes it for good).                         |
-| **Three languages**  | Burmese by default, plus English and Chinese. Follows the Telegram app's language; `/language` remembers your choice.       |
-| **Flag bad data**    | 🚩 Report on every card. Three different users hide a place automatically.                                                  |
+|                      |                                                                                                                                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Find the nearest** | `/nearest`, or tap 📍 Nearest. Search widens automatically if there's nothing close.                                                                                                                                   |
+| **View a place**     | Results are native venue cards with a one-tap Directions button.                                                                                                                                                       |
+| **Add a place**      | `/share` → send the location → name it (or Skip). Not standing there? Attach a location, forward a place, or paste a map link / coordinates. Close duplicates are caught and turned into a "same place?" confirmation. |
+| **Search by text**   | `/find station`, or tap 🔍 Find.                                                                                                                                                                                       |
+| **Share anywhere**   | Inline mode: `@yourbot central station` in any chat.                                                                                                                                                                   |
+| **Rate a place**     | Tap 1–5 stars on any card. The average shows on the card; rating again replaces your score.                                                                                                                            |
+| **Manage your own**  | `/mine` lists what you added, with Rename and Delete (delete asks first, then removes it for good).                                                                                                                    |
+| **Three languages**  | Burmese by default, plus English and Chinese. Follows the Telegram app's language; `/language` remembers your choice.                                                                                                  |
+| **Flag bad data**    | 🚩 Report on every card. Three different users hide a place automatically.                                                                                                                                             |
 
 ## Quick start
 
@@ -67,18 +67,18 @@ places a visitor can use. Attribution to OpenStreetMap and the ODbL is included 
 
 ## Commands
 
-| Command        | Description                                      |
-| -------------- | ------------------------------------------------ |
-| `/start`       | Welcome screen and the persistent keyboard       |
-| `/nearest`     | Ask for a location, list the closest toilets     |
-| `/share`       | Add a toilet (location → duplicate check → name) |
-| `/find <text>` | Search by name or address                        |
-| `/language`    | Switch between Burmese, English and Chinese      |
-| `/mine`        | Rename or delete places you added                |
-| `/skip`        | Finish adding a place without naming it          |
-| `/cancel`      | Abandon the current flow                         |
-| `/about`       | Data sources and privacy                         |
-| `/help`        | Usage summary                                    |
+| Command        | Description                                                                           |
+| -------------- | ------------------------------------------------------------------------------------- |
+| `/start`       | Welcome screen and the persistent keyboard                                            |
+| `/nearest`     | Ask for a location, list the closest toilets                                          |
+| `/share`       | Add a toilet (pin, forwarded place, map link or coordinates → duplicate check → name) |
+| `/find <text>` | Search by name or address                                                             |
+| `/language`    | Switch between Burmese, English and Chinese                                           |
+| `/mine`        | Rename or delete places you added                                                     |
+| `/skip`        | Finish adding a place without naming it                                               |
+| `/cancel`      | Abandon the current flow                                                              |
+| `/about`       | Data sources and privacy                                                              |
+| `/help`        | Usage summary                                                                         |
 
 ## How it works
 
@@ -230,7 +230,7 @@ Three loops, cheapest first.
 ### 1. Tests — half a second, no token, no network
 
 ```sh
-uv run pytest                                    # everything (228 tests)
+uv run pytest                                    # everything (262 tests)
 uv run pytest tests/test_flows.py -k duplicate    # one flow
 uv run pytest --looponfail                       # re-run on save
 uv run ruff check                                # lint (rules live in pyproject.toml)
@@ -238,8 +238,9 @@ uv run ruff check                                # lint (rules live in pyproject
 
 They cover the geo maths (antimeridian, poles), every query in `repo.py`, the handler flows end to
 end (share, duplicate detection, reports, ratings, inline mode, deep links, the language switch,
-owning and deleting your own places) against real `Update` objects, the OSM tag mapping, the backup
-path, and the simulator's own routing — with only the network boundary mocked.
+owning and deleting your own places, coordinates typed or pasted instead of shared) against real
+`Update` objects, the OSM tag mapping, the backup path, and the simulator's own routing — with only
+the network boundary mocked.
 
 ### 2. Conversation simulator — the real dispatcher, no Telegram
 

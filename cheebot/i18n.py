@@ -125,7 +125,10 @@ _MY: dict[str, str] = {
         "🌐 ဘာသာစကား ကို နှိပ်ပြီး မြန်မာ၊ English၊ 中文 ကို ပြောင်းနိုင်သည်။"
     ),
     # Nearest
-    "ask_location_nearest": "သင့်တည်နေရာကို ပို့ပါ၊ အနီးဆုံး အိမ်သာများကို စာရင်းပြပါမည်။",
+    "ask_location_nearest": (
+        "သင့်တည်နေရာကို ပို့ပါ၊ အနီးဆုံး အိမ်သာများကို စာရင်းပြပါမည်။ "
+        "အခြားနေရာမှ ရှာလိုပါက မြေပုံလင့်ခ် သို့မဟုတ် ကိုဩဒိနိတ် ကူးထည့်ပါ။"
+    ),
     "nearest_button_label": "📍 ကျွန်ုပ်၏ တည်နေရာ ပို့ပါ",
     "nearest_header_default": "<b>{radius} အတွင်း အနီးဆုံး အိမ်သာများ</b>",
     "nearest_header_widened": ("{widened} အတွင်း မတွေ့ပါ၊ ထို့ကြောင့် {radius} အထိ ချဲ့ထားသည်:"),
@@ -144,7 +147,10 @@ _MY: dict[str, str] = {
     "share_intro": (
         "➕ <b>အိမ်သာ ထည့်ရန်</b>\n\n"
         "အိမ်သာ၏ တည်နေရာကို ပို့ပါ။ အိမ်သာဘေးတွင် ရပ်ပြီး ပို့ပါက အကောင်းဆုံး "
-        "ဖြစ်သည် — မြေပုံပေါ်တွင် အနီးအနား ချထားသော pin လည်း ရပါသည်။"
+        "ဖြစ်သည် — မြေပုံပေါ်တွင် အနီးအနား ချထားသော pin လည်း ရပါသည်။\n\n"
+        "ထိုနေရာတွင် မရှိပါက 📎 → Location ဖြင့် တည်နေရာ ပူးတွဲပြီး pin ကို "
+        "ရွှေ့ပါ၊ သို့မဟုတ် မြေပုံလင့်ခ် / ကိုဩဒိနိတ် (16.7748, 96.1583) ကို "
+        "ကူးထည့်ပါ။"
     ),
     "ask_name": "ရပါပြီ။ ဒီနေရာကို ဘယ်လိုခေါ်သလဲ။\n\nအမည် ပို့ပါ၊ ဒါမှမဟုတ် ကျော် ကို နှိပ်ပါ။",
     "share_confirmed": (
@@ -181,7 +187,11 @@ _MY: dict[str, str] = {
     "deleted": "ဖျက်ပြီးပါပြီ။",
     "nothing_to_skip": "ယခု ကျော်ရန် ဘာမှ မရှိပါ။",
     "draft_expired": "ဒီတောင်းဆိုချက် သက်တမ်းကုန်သွားပါပြီ။ /share ဖြင့် ပြန်စပါ။",
-    "send_location_instead": "တည်နေရာ ပို့ပါ၊ ဒါမှမဟုတ် ရပ်ရန် /cancel ရိုက်ပါ။",
+    "send_location_instead": (
+        "တည်နေရာကို ပို့ပါ၊ မြေပုံလင့်ခ် သို့မဟုတ် ကိုဩဒိနိတ် "
+        "(16.7748, 96.1583) ကို ကူးထည့်ပါ။ Telegram တွင် 📎 → Location ဖြင့် "
+        "pin ကို ရွှေ့ပြီး ပို့နိုင်သည်။ ရပ်ရန် /cancel ရိုက်ပါ။"
+    ),
     "prompt_dismissed": "✓",
     "cancelled": "ပယ်ဖျက်ပြီးပါပြီ။ ဘာမှ မသိမ်းဆည်းပါ။",
     "error": "ကျွန်ုပ်၏ ဘက်မှာ တစ်ခုခု မှားသွားသည်။ ခဏနေရင် ပြန်ကြိုးစားပါ။",
@@ -263,7 +273,8 @@ _EN: dict[str, str] = {
         "Tap 🌐 Language to switch between မြန်မာ, English and 中文."
     ),
     "ask_location_nearest": (
-        "Send me your location and I'll list the toilets closest to you."
+        "Send me your location and I'll list the toilets closest to you. "
+        "Searching from somewhere else? Paste a map link or coordinates."
     ),
     "nearest_button_label": "📍 Send my location",
     "nearest_header_default": "<b>Closest toilets within {radius}</b>",
@@ -284,7 +295,10 @@ _EN: dict[str, str] = {
     "share_intro": (
         "➕ <b>Add a toilet</b>\n\n"
         "Send me the location of the toilet. Standing next to it gives the best "
-        "pin — a map pin you drop nearby works too."
+        "pin — a map pin you drop nearby works too.\n\n"
+        "Not there right now? Attach a location in Telegram (📎 → Location) and "
+        "move the pin, or paste a map link or coordinates like "
+        "16.7748, 96.1583."
     ),
     "ask_name": "Got it. What's this place called?\n\nSend a name, or tap Skip.",
     "share_confirmed": (
@@ -318,7 +332,11 @@ _EN: dict[str, str] = {
     "deleted": "Deleted.",
     "nothing_to_skip": "There's nothing to skip right now.",
     "draft_expired": "That prompt has expired. Start again with /share.",
-    "send_location_instead": "Send me a location, or /cancel to stop.",
+    "send_location_instead": (
+        "Send me a location, or paste a map link or coordinates like "
+        "16.7748, 96.1583. In Telegram you can attach a location "
+        "(📎 → Location) and move the pin first. /cancel to stop."
+    ),
     "prompt_dismissed": "✓",
     "cancelled": "Cancelled. Nothing was saved.",
     "error": "Something went wrong on my side. Please try again in a moment.",
@@ -393,7 +411,9 @@ _ZH: dict[str, str] = {
         "有错误或缺少地点？在任意结果上点 🚩 举报，或给它打 1–5 星。\n\n"
         "点 🌐 语言 可在 မြန်မာ、English、中文 之间切换。"
     ),
-    "ask_location_nearest": "发送你的位置，我会列出离你最近的厕所。",
+    "ask_location_nearest": (
+        "发送你的位置，我会列出离你最近的厕所。想从别处搜索？粘贴地图链接或坐标即可。"
+    ),
     "nearest_button_label": "📍 发送我的位置",
     "nearest_header_default": "<b>{radius} 内最近的厕所</b>",
     "nearest_header_widened": "{widened} 内没有找到，所以我把范围扩大到 {radius}：",
@@ -409,7 +429,9 @@ _ZH: dict[str, str] = {
     "share_button_label": "📍 发送厕所的位置",
     "share_intro": (
         "➕ <b>添加厕所</b>\n\n"
-        "发送这个厕所的位置。站在旁边发送最准确，在地图上附近放一个图钉也可以。"
+        "发送这个厕所的位置。站在旁边发送最准确，在地图上附近放一个图钉也可以。\n\n"
+        "不在旁边？在 Telegram 中通过 📎 → 位置 移动图钉后发送，"
+        "或粘贴地图链接、坐标（如 16.7748, 96.1583）。"
     ),
     "ask_name": "收到。这个地方叫什么？\n\n发送名称，或点“跳过”。",
     "share_confirmed": (
@@ -440,7 +462,10 @@ _ZH: dict[str, str] = {
     "deleted": "已删除。",
     "nothing_to_skip": "目前没有可跳过的内容。",
     "draft_expired": "该提示已过期。请用 /share 重新开始。",
-    "send_location_instead": "请发送位置，或输入 /cancel 停止。",
+    "send_location_instead": (
+        "请发送位置，或粘贴地图链接、坐标（如 16.7748, 96.1583）。"
+        "在 Telegram 中可通过 📎 → 位置 移动图钉后发送。输入 /cancel 可停止。"
+    ),
     "prompt_dismissed": "✓",
     "cancelled": "已取消，没有保存任何内容。",
     "error": "我这边出了点问题，请稍后再试。",

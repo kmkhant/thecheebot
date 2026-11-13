@@ -41,14 +41,20 @@ async def prompt_share(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     )
 
 
-async def location_received(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def point_received(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, lat: float, lon: float
+) -> None:
+    """Check a point for duplicates, however the user supplied it.
+
+    Called for a shared location, a forwarded venue and typed coordinates, so
+    the flow behaves the same whichever way the pin was chosen.
+    """
     message = update.effective_message
     draft = user_data(context).get("draft")
-    if message is None or message.location is None or draft is None:
+    if message is None or draft is None:
         return
 
     language = user_language(update, context)
-    lat, lon = message.location.latitude, message.location.longitude
     draft.update({"lat": lat, "lon": lon, "stage": "duplicate"})
 
     conf = settings(context)

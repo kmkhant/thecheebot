@@ -48,22 +48,27 @@ async def prompt_nearest(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     )
 
 
-async def location_received(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle a shared point for a nearby search.
+async def point_received(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, lat: float, lon: float
+) -> None:
+    """Handle a point for a nearby search.
 
-    The location is used for this query only and never written to the database.
+    The point is used for this query only and never written to the database.
+    It can come from a shared location, a forwarded venue, or typed
+    coordinates — the search is identical either way.
     """
     message = update.effective_message
-    if message is None or message.location is None:
+    if message is None:
         return
 
+    user_data(context).pop("flow", None)
     language = user_language(update, context)
     conf = settings(context)
     with db(context).connect() as conn:
         radius, results, widened_from = _search(
             conn,
-            message.location.latitude,
-            message.location.longitude,
+            lat,
+            lon,
             conf.default_radius_m,
             conf.max_radius_m,
             conf.results_limit,

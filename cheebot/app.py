@@ -108,8 +108,11 @@ def _register_handlers(app: Application) -> None:
     app.add_handler(CommandHandler("language", language.prompt))
     app.add_handler(CommandHandler("mine", manage.prompt_mine))
 
-    # Locations arrive from the "send my location" button or an attachment.
-    app.add_handler(MessageHandler(filters.LOCATION, router.on_location))
+    # A point can arrive as a shared location, a forwarded place, or typed
+    # coordinates (handled in router.on_text). All take the same path.
+    app.add_handler(
+        MessageHandler(filters.LOCATION | filters.VENUE, router.on_location)
+    )
 
     # Inline buttons on result cards
     app.add_handler(CallbackQueryHandler(share.duplicate_callback, pattern=r"^dup:"))

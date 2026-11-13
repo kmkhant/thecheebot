@@ -96,6 +96,24 @@ def text_update(app, text: str, message_id: int = 11) -> Update:
     )
 
 
+def venue_update(app, lat: float, lon: float, message_id: int = 13) -> Update:
+    """A forwarded place, which carries its point in ``venue``, not ``location``."""
+    return Update.de_json(
+        {
+            "update_id": message_id,
+            "message": _message(
+                message_id,
+                venue={
+                    "location": {"latitude": lat, "longitude": lon},
+                    "title": "Forwarded place",
+                    "address": "Somewhere",
+                },
+            ),
+        },
+        app.bot,
+    )
+
+
 def callback_update(
     app, data: str, message_id: int = 12, user_id: int = USER["id"]
 ) -> Update:
@@ -333,6 +351,100 @@ def test_abandoning_the_location_step_is_explained(app) -> None:
     mocks = run_handler(router.on_text, text_update(app, "here"), context)
 
     assert "/cancel" in sent_texts(mocks)[0]
+
+
+# --------------------------------------------------------------------------- #
+# Adding a toilet somewhere else
+# --------------------------------------------------------------------------- #
+
+
+def test_share_accepts_typed_coordinates(app) -> None:
+    context = context_for(app, user_data={"draft": {"stage": "location"}})
+
+    run_handler(router.on_text, text_update(app, "16.7748, 96.1583"), context)
+    assert context.user_data["draft"]["stage"] == "name"
+
+    run_handler(router.on_text, text_update(app, "Sule corner"), context)
+
+    with app.bot_data["db"].connect() as conn:
+        saved = repo.search_by_text(conn, "Sule corner")[0]
+    assert saved["lat"] == pytest.approx(16.7748)
+    assert saved["lon"] == pytest.approx(96.1583)
+
+
+def test_share_accepts_a_pasted_map_link(app) -> None:
+    context = context_for(app, user_data={"draft": {"stage": "location"}})
+    link = "https://www.google.com/maps/@16.7748,96.1583,17z"
+
+    run_handler(router.on_text, text_update(app, link), context)
+
+    assert context.user_data["draft"]["stage"] == "name"
+    assert context.user_data["draft"]["lat"] == pytest.approx(16.7748)
+    assert context.user_data["draft"]["lon"] == pytest.approx(96.1583)
+
+
+def test_typed_coordinates_still_get_the_duplicate_check(app) -> None:
+    add_toilet(app, lat=16.7748, lon=96.1583)
+    context = context_for(app, user_data={"draft": {"stage": "location"}})
+
+    mocks = run_handler(router.on_text, text_update(app, "16.7748, 96.1583"), context)
+
+    assert "already on the map" in sent_texts(mocks)[0]
+    assert context.user_data["draft"]["stage"] == "duplicate"
+
+
+def test_text_that_is_not_a_point_is_explained(app) -> None:
+    context = context_for(app, user_data={"draft": {"stage": "location"}})
+
+    mocks = run_handler(
+        router.on_text, text_update(app, "near the night market"), context
+    )
+
+    assert "coordinates" in sent_texts(mocks)[0]
+    assert context.user_data["draft"]["stage"] == "location"
+
+
+def test_a_forwarded_venue_starts_the_share_flow(app) -> None:
+    context = context_for(app, user_data={"draft": {"stage": "location"}})
+
+    run_handler(router.on_location, venue_update(app, 16.7748, 96.1583), context)
+
+    assert context.user_data["draft"]["stage"] == "name"
+    assert context.user_data["draft"]["lat"] == pytest.approx(16.7748)
+
+
+def test_the_app_routes_a_forwarded_venue_like_a_location(app) -> None:
+    """The handler filter, not just the handler, has to accept a venue."""
+    add_toilet(app, lat=16.7748, lon=96.1583, name="Sule WC")
+
+    async def _dispatch() -> None:
+        await app.initialize()
+        await app.process_update(venue_update(app, 16.7748, 96.1583))
+
+    with patch.object(Bot, "initialize", AsyncMock()):
+        mocks = run_handler(_dispatch)
+
+    assert mocks.send_venue.call_count == 1
+
+
+def test_nearest_accepts_typed_coordinates(app) -> None:
+    add_toilet(app, lat=16.7748, lon=96.1583, name="Sule WC")
+    context = context_for(app)
+    context.user_data["flow"] = "nearest"
+
+    mocks = run_handler(router.on_text, text_update(app, "16.7748, 96.1583"), context)
+
+    assert mocks.send_venue.call_count == 1
+    assert "flow" not in context.user_data
+
+
+def test_nearest_explains_text_that_is_not_a_point(app) -> None:
+    context = context_for(app)
+    context.user_data["flow"] = "nearest"
+
+    mocks = run_handler(router.on_text, text_update(app, "the big temple"), context)
+
+    assert "coordinates" in sent_texts(mocks)[0]
 
 
 # --------------------------------------------------------------------------- #

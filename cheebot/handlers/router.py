@@ -2,21 +2,36 @@
 
 from __future__ import annotations
 
-from telegram import Update
+from telegram import Message, Update
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
 from .. import keyboards
 from ..deps import user_data, user_language
 from ..i18n import t
+from ..locations import parse_point
 from . import manage, nearby, share
 
 
+def _point_of(message: Message | None) -> tuple[float, float] | None:
+    """The point carried by a location or a forwarded venue message."""
+    if message is None:
+        return None
+    if message.location is not None:
+        return message.location.latitude, message.location.longitude
+    if message.venue is not None:
+        return message.venue.location.latitude, message.venue.location.longitude
+    return None
+
+
 async def on_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    point = _point_of(update.effective_message)
+    if point is None:
+        return
     if user_data(context).get("draft") is not None:
-        await share.location_received(update, context)
+        await share.point_received(update, context, *point)
     else:
-        await nearby.location_received(update, context)
+        await nearby.point_received(update, context, *point)
 
 
 async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -41,9 +56,24 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     language = user_language(update, context)
 
     if draft.get("stage") == "location":
+        point = parse_point(text)
+        if point is not None:
+            await share.point_received(update, context, *point)
+            return
         await message.reply_text(
             t(language, "send_location_instead"),
             reply_markup=keyboards.location_keyboard(language, "share_button_label"),
+        )
+        return
+
+    if data.get("flow") == "nearest":
+        point = parse_point(text)
+        if point is not None:
+            await nearby.point_received(update, context, *point)
+            return
+        await message.reply_text(
+            t(language, "send_location_instead"),
+            reply_markup=keyboards.location_keyboard(language, "nearest_button_label"),
         )
         return
 

@@ -9,14 +9,14 @@ not break. For what the bot does and how it is deployed, see the [README](README
 
 ## Ways to help
 
-| Contribution              | Where                                                                 |
-| ------------------------- | --------------------------------------------------------------------- |
-| Report a bug              | Open an issue with what you sent, what happened, and what you expected |
-| Suggest a feature         | Open an issue first for anything larger than a small fix              |
-| Add a city                | One line in `cheebot/seeds.py` — see [Add a city](#add-a-city)         |
-| Improve a translation     | `cheebot/i18n.py` — see [Add a language](#add-a-language)              |
-| Improve the docs          | `README.md`, `CONTRIBUTING.md`                                         |
-| Write code                | Pick up an issue, or propose one                                      |
+| Contribution          | Where                                                                  |
+| --------------------- | ---------------------------------------------------------------------- |
+| Report a bug          | Open an issue with what you sent, what happened, and what you expected |
+| Suggest a feature     | Open an issue first for anything larger than a small fix               |
+| Add a city            | One line in `cheebot/seeds.py` — see [Add a city](#add-a-city)         |
+| Improve a translation | `cheebot/i18n.py` — see [Add a language](#add-a-language)              |
+| Improve the docs      | `README.md`, `CONTRIBUTING.md`                                         |
+| Write code            | Pick up an issue, or propose one                                       |
 
 ## Ground rules
 
@@ -57,6 +57,7 @@ cheebot/
 │   ├── db.py              # connections and append-only schema migrations
 │   ├── repo.py            # every SQL statement lives here
 │   ├── geo.py             # bounding box + haversine, antimeridian safe
+│   ├── locations.py       # points typed or pasted instead of shared
 │   ├── identity.py        # salted user hashes
 │   ├── deps.py            # per-user language, context.user_data helpers
 │   ├── i18n.py            # the three language catalogs and t()
@@ -80,7 +81,7 @@ Two rules keep this structure useful:
 
 ## Development loop
 
-Cheapest first — the README has the long version under *Local development*.
+Cheapest first — the README has the long version under _Local development_.
 
 ```sh
 uv run pytest                            # full suite, no token, no network, ~1 s
@@ -104,7 +105,7 @@ a dev bot running the same token as production will fight it for updates.
 3. Add or update tests that fail without your change.
 4. `uv run pytest && uv run ruff check` — both must be clean.
 5. If you touched dependencies, run `uv lock` and commit the updated `uv.lock`.
-6. Open a pull request describing *what* changed and *why*.
+6. Open a pull request describing _what_ changed and _why_.
 
 ### Code conventions
 
